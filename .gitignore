@@ -54,3 +54,6 @@ TestResult.xml
 nunit-*.xml
 
 .vscode
+*.db
+*.db-shm
+*.db-wal
