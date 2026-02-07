@@ -1,11 +1,15 @@
+using GameStore.Api.Data;
 using GameStore.Api.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddValidation();
 
-var app = builder.Build();
+var connString = "Data Source=GasmeStore.db";
 
+builder.Services.AddSqlite<GameStoreContext>(connString);
+
+var app = builder.Build();
 
 app.MapGet("/", () => "Hello, Wolrd!");
 
