@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddValidation();
 
-var connString = "Data Source=GasmeStore.db";
+var connString = "Data Source=GameStore.db";
 
 builder.Services.AddSqlite<GameStoreContext>(connString);
 
@@ -14,5 +14,7 @@ var app = builder.Build();
 app.MapGet("/", () => "Hello, Wolrd!");
 
 app.MapGamesEndPoints();
+
+app.MigrateDb();
 
 app.Run();
