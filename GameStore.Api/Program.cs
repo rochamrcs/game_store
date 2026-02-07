@@ -1,5 +1,6 @@
 using CreateGameStore.Api.Dtos;
 using GameStore.Api.Dtos;
+using UpdateGameStore.Api.Dtos;
 
 const string GetGameEndpointName = "GetGame";
 
@@ -14,6 +15,8 @@ List<GameDto> games = [
     new (4, "Final Fantasy VII", "RPG", 89.99M, new DateOnly(1997, 1, 31)),
     new (5, "Metal Gear Solid", "Action", 69.99M, new DateOnly(1998, 9, 3)),
 ];
+
+app.MapGet("/", () => "Hello, Wolrd!");
 
 app.MapGet("/games", () => games);
 
@@ -33,6 +36,21 @@ app.MapPost("/games", (CreateGameDto newGame) => {
 
     return Results.CreatedAtRoute(GetGameEndpointName, new {id = game.id}, game);
 
+});
+
+app.MapPut("/games/{id}", (int id, UpdateGameDto updatedGame) =>
+{
+    var index = games.FindIndex(game => game.id == id);
+
+    games[index] = new GameDto(
+        id,
+        updatedGame.Name,
+        updatedGame.Genre,
+        updatedGame.Price,
+        updatedGame.ReleaseDate
+    );
+
+    return Results.NoContent();
 });
 
 app.Run();
