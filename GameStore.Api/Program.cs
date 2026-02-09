@@ -13,6 +13,7 @@ var app = builder.Build();
 app.MapGet("/", () => "Hello, Wolrd!");
 
 app.MapGamesEndPoints();
+app.MapGenresEndpoint();
 
 app.MigrateDb();
 
