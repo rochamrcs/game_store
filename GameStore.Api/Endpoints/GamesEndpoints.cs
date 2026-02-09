@@ -1,5 +1,7 @@
 using CreateGameStore.Api.Dtos;
+using GameStore.Api.Data;
 using GameStore.Api.Dtos;
+using GameStore.Api.Models;
 using UpdateGameStore.Api.Dtos;
 
 namespace GameStore.Api.Endpoints;
@@ -29,29 +31,28 @@ public static class GamesEndPoints
         })
         .WithName(GetGameEndpointName);
 
-        group.MapPost("/", (CreateGameDto newGame) => {
+        group.MapPost("/", async (CreateGameDto newGame, GameStoreContext dbContext) => {
 
-            var gameExists = games.Any(g =>
-                g.Name.Equals(newGame.Name, StringComparison.OrdinalIgnoreCase)
-            );
-
-            if (gameExists)
+            Game game = new()
             {
-                return Results.Conflict($"O jogo {newGame.Name} já existe.");
-            }
+                Name = newGame.Name,
+                GenreId = newGame.GenreId,
+                Price = newGame.Price,
+                ReleaseDate = newGame.ReleaseDate
+            };
 
-            GameDto game = new(
-                games.Count + 1,
-                newGame.Name,
-                newGame.Genre,
-                newGame.Price,
-                newGame.ReleaseDate
+            dbContext.Games.Add(game);
+            dbContext.SaveChanges();
+
+            GameDetailsDto gameDto = new(
+                game.Id,
+                game.Name,
+                game.GenreId,
+                game.Price,
+                game.ReleaseDate
             );
 
-
-            games.Add(game);
-
-            return Results.CreatedAtRoute(GetGameEndpointName, new {id = game.id}, game);
+            return Results.CreatedAtRoute(GetGameEndpointName, new {id = gameDto.id}, gameDto);
 
         });
 
